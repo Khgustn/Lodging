@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="room">
+	<!-- 객실 등록 -->
+	<insert id="room_insert" parameterType="vo.RoomVO">
+		insert into room
+		values(seq_room_roomnum.nextVal,#{ownid},#{roomcount},#{roomname},#{roomprice},#{roomcheckin}
+		,#{roomcheckout},#{roominfo},#{filename})
+	</insert>
+
+	<!-- 모든 객실 출력 -->
+	<select id="room_list" resultType="vo.RoomVO">
+		select * from room
+	</select>
+
+	<!-- 호텔 상세보기 룸 출력 -->
+	<select id="hotel_room" resultType="vo.RoomVO"
+		parameterType="String">
+		select * from room where ownid=#{ownid}
+	</select>
+
+	<!-- 체크인 안한 룸 -->
+	<select id="room_notcheckin" resultType="vo.BookingVO"
+		parameterType="java.util.Map">
+		select * from (
+		select b.booknum, m.memname, m.memtel,
+		b.roomname, b.bookcheckin, b.bookcheckout,
+		r.roomcount, b.bookstatus
+		from member m, room r, booking b
+		where r.ownid = #{ownid} and
+		r.roomname = b.roomname and
+		m.memid =
+		b.memid and b.bookstatus = 1)
+		where bookcheckin = #{bookcheckin} or bookcheckin &lt; #{bookcheckin}
+	</select>
+
+	<!-- 체크인 한 룸 -->
+	<select id="room_checkinok" resultType="vo.BookingVO"
+		parameterType="java.util.Map">
+		select * from (
+		select b.booknum, m.memname, m.memtel,
+		b.roomname, b.bookcheckin, b.bookcheckout,
+		r.roomcount, b.bookstatus
+		from member m, room r, booking b
+		where r.ownid = #{ownid} and
+		r.roomname = b.roomname and
+		m.memid =
+		b.memid and b.bookstatus = 3)
+		where bookcheckin = #{bookcheckin}
+	</select>
+
+	<!-- 오늘 체크인 업데이트 -->
+	<update id="room_update_todaycheckin"
+		parameterType="java.util.Map">
+		update booking set bookstatus =3 where buname=#{buname} and
+		booknum=#{booknum} and bookcheckin= #{bookcheckin}
+	</update>
+	
+	<!-- 체크아웃 안한 룸 -->
+	<select id="room_notcheckout" resultType="vo.BookingVO"
+		parameterType="java.util.Map">
+		select * from (
+		select b.booknum, m.memname, m.memtel,
+		b.roomname, b.bookcheckin, b.bookcheckout,
+		r.roomcount, b.bookstatus
+		from member m, room r, booking b
+		where r.ownid = #{ownid} and
+		r.roomname = b.roomname and
+		m.memid =
+		b.memid and b.bookstatus = 3)
+		where bookcheckout = #{bookcheckout} or bookcheckout &gt; #{bookcheckout}
+	</select>
+
+	<!-- 체크아웃 한 룸 -->
+	<select id="room_checkoutok" resultType="vo.BookingVO"
+		parameterType="java.util.Map">
+		select * from (
+		select b.booknum, m.memname, m.memtel,
+		b.roomname, b.bookcheckin, b.bookcheckout,
+		r.roomcount, b.bookstatus
+		from member m, room r, booking b
+		where r.ownid = #{ownid} and
+		r.roomname = b.roomname and
+		m.memid =
+		b.memid and b.bookstatus = 4)
+		where bookcheckout = #{bookcheckout}
+	</select>
+
+	<!-- 오늘 체크아웃 업데이트 -->
+	<update id="room_update_todaycheckout"
+		parameterType="java.util.Map">
+		update booking set bookstatus =4 where buname=#{buname} and
+		booknum=#{booknum} and bookcheckin= #{bookcheckin}
+	</update>
+	
+	<!-- 전체 리뷰 조회-->
+	<select id="review_relist" resultType="vo.ReviewVO"
+		parameterType="java.util.Map">
+		select * from
+		(select rank() over(order by ref desc, step
+		asc) no, b.* from review b )
+		where  buname = #{buname}
+	</select> 
+
+</mapper>

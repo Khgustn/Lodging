@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="admin">
+
+
+	<!-- 사업자 리스트 -->
+	<select id="admin_list" resultType="vo.BusinessVO">
+		select * from business order
+		by approval
+	</select>
+
+	<!-- 회원 리스트 -->
+	<select id="member_list" resultType="vo.MemberVO">
+		select * from member order
+		by verify
+	</select>
+
+
+	<update id="business_update" parameterType="vo.BusinessVO">
+		update business set
+		approval='승인'
+		where ownid=#{ownid}
+	</update>
+
+	<update id="business_cancel" parameterType="vo.BusinessVO">
+		update business set
+		approval='미승인'
+		where ownid=#{ownid}
+	</update>
+
+	<!-- 리뷰 리스트 -->
+	<select id="review_list" resultType="vo.ReviewVO">
+		select * from review order
+		by memid
+	</select>
+
+	<!-- 회원 추방 기능 -->
+	<delete id="member_delete" parameterType="String">
+		delete from member
+		where memid = #{memid}
+	</delete>
+
+	<!-- 리뷰 삭제 기능 -->
+	<delete id="review_delete" parameterType="int">
+		delete from review
+		where idx = #{idx}
+	</delete>
+
+
+
+
+	<!-- 신고된 리뷰 report 컬럼 유지로 업데이트 -->
+
+	<update id="review_update" parameterType="vo.ReviewVO">
+		update review set
+		report = '유지'
+		where idx=#{idx}
+	</update>
+
+</mapper>

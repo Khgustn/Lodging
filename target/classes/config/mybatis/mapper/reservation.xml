@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="reservation">
+
+	<!-- 객실 상세보기 -->
+	<select id="room_detail" resultType="vo.RoomVO"
+		parameterType="int">
+		select * from room where roomnum=#{roomnum}
+	</select>
+
+	<!-- 예약 중복 룸 리스트 -->
+	<select id="reservation_overlap" resultType="vo.RoomVO"
+		parameterType="java.util.Map">
+		select a.*, nvl(r.overlap,0) as overlap from (select *
+		from room where ownid=#{ownid} ) a
+		left outer join (select
+		roomnum,count(*) as overlap from reserved where
+		regdate between
+		#{bookcheckin} and #{bookcheckout}
+		group by roomnum) r
+		on a.roomnum =
+		r.roomnum
+	</select>
+
+
+	<!-- 예약자 정보 가져오기 -->
+	<select id="reservation_getmember" resultType="vo.MemberVO"
+		parameterType="String">
+		select * from member where memid=#{memid}
+
+	</select>
+
+
+	<!-- 방 예약하기 -->
+	<insert id="reservation_booking" parameterType="vo.BookingVO">
+		insert into
+		booking values(
+		#{booknum},#{memid},#{roomnum},#{buname},#{roomname},#{bookcheckin},
+		#{bookcheckout},#{bookstatus},#{bookpayment},#{bookprice},#{bookregdate})
+
+	</insert>
+
+	<!-- 중박된 방확인 위한 예약하기 -->
+	<insert id="reservation_reserved" parameterType="java.util.Map">
+		insert into
+		reserved values(#{regdate},#{roomnum})
+	</insert>
+
+	<!-- 예약자 예약 내역 가져오기 -->
+	<select id="reservation_list" resultType="vo.BookingVO"
+		parameterType="vo.MemberVO">
+		select b.*,r.filename from booking b inner join room r
+		on b.roomname=r.roomname where memid=#{memid}
+	</select>
+
+
+	<!-- 예약 취소하기 -->
+	<delete id="reservation_cancel" parameterType="vo.BookingVO">
+		delete from
+		reserved where roomnum=#{roomnum} and regdate between #{bookcheckin}
+		and #{bookcheckout}"
+	</delete>
+	<!-- 취소시 예약 상태 변경 -->
+	<update id="reservation_status_update" parameterType="String">
+		update
+		booking set bookstatus=2 where booknum=#{booknum}
+
+	</update>
+	<!-- 취소시 상태 변경 방 가져오기 -->
+	<select id="reservation_select" resultType="vo.BookingVO"
+		parameterType="String">
+		select * from booking where booknum=#{booknum}
+	</select>
+
+	<!-- 전체 리뷰 조회 -->
+	<select id="review_list" resultType="vo.ReviewVO"
+		parameterType="java.util.Map">
+		select * from
+		(select rank() over(order by ref desc, step
+		asc) no, b.* from review b )
+		where no between #{start} and #{end}
+	</select>
+
+
+
+
+
+	<!-- 전체게시물 수 -->
+	<select id="review_count" resultType="int">
+		select COUNT(*) from review
+	</select>
+</mapper>

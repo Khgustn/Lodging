@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="member">
+	<insert id="member_enroll" parameterType="vo.MemberVO">
+		insert into member values(#{memid},#{mempwd},#{memname},#{memgender},#{mememail},#{membirth}
+		,'회원',#{memtel})
+	</insert>
+	
+	<!-- 회원 로그인 -->
+	<select id="login_idcheck" resultType="vo.MemberVO" parameterType="vo.MemberVO">
+		select * from member where memid = #{memid}
+	</select>
+	
+	<!-- 회원 등록 아이디 중복 체크 -->
+	<select id="member_idcheck" resultType="vo.MemberVO" parameterType="vo.MemberVO">
+		select * from member where memid=#{memid}
+	</select>
+	
+	<!-- 휴대폰 검증 -->
+	<select id="memberphone" parameterType="String" resultType="int">
+		select count(*) from member where memtel=#{memtel} 
+	</select>
+</mapper>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="review">
+	
+	<!-- 전체 리뷰 조회-->
+	<select id="review_list" resultType="vo.ReviewVO"
+		parameterType="java.util.Map">
+		select * from
+		(select rank() over(order by ref desc, step
+		asc) no, b.* from review b )
+		where  buname = #{buname}
+	</select> 
+	
+	<!-- member 리뷰 조회-->
+	<select id="review_memlist" resultType="vo.ReviewVO"
+		parameterType="java.util.Map">
+		select * from
+		(select rank() over(order by ref desc, step
+		asc) no, b.* from review b )
+		where memid=#{memid}
+	</select> 
+
+
+
+	<!-- 전체게시물 수-->
+	<select id="review_count" resultType="int">
+		select COUNT(*) from review 
+	</select> 
+	<!--리뷰작성 -->
+	<insert id="review_insert" parameterType="object">
+			insert into review values(
+			seq_review_idx.nextVal,
+			#{memid},
+			#{subject},
+			#{content},
+			#{filename},
+			#{rating},
+			#{ip},
+			sysdate,
+			seq_review_idx.currVal,
+			0,
+			0,
+			#{buname},
+			'미신고',
+			'null'
+			)
+	</insert>
+	
+	<!-- 상세보기 -->
+	<select id="review_one" parameterType="int" resultType="vo.ReviewVO">
+		select * from review where idx=#{idx}
+	</select>
+	
+	<!--step 값 증가 -->
+	<update id="update_step" parameterType="int">
+		update review set step = 
+		step + 1
+		where ref=#{ref} and step > #{step}
+	</update>
+	
+	<!-- 방명록 부분 조회 -->
+	<select id="review_idx" parameterType="int" resultType="vo.ReviewVO">
+		select * from review where idx = #{idx}
+	</select>
+	
+	<!-- 삭제  -->
+	<delete id="review_delete" parameterType="int">
+		delete review where idx = #{idx}
+	</delete>
+	
+	<!-- 수정 -->
+	<update id="review_modify" parameterType="object">
+		update review set 
+		subject=#{subject},
+		content=#{content},
+		filename=#{filename},
+		rating=#{rating},
+		regdate=sysdate
+		where idx=#{idx}
+	</update>
+	
+	<!-- 댓글달기 -->
+	<insert id="review_reply" parameterType="object">
+		insert into review values(seq_review_idx.nextVal,
+		'null',
+		#{subject},
+		#{content},
+		'no_file',
+		6,
+		#{ip},
+		sysdate,
+		#{ref},
+		#{step},
+		#{depth},
+		#{buname},
+		'미신고',
+		#{ownid})
+	
+	</insert>
+	
+	<!-- 평균점수 구하기 -->
+	<select id="review_cal_avg" resultType="vo.ReviewVO">
+ 		select rating from review where buname = #{buname} AND DEPTH = '0'
+<!-- 			select NVL(avg(rating),0) from review where buname = #{buname} AND DEPTH = '0' -->
+	</select>
+	
+</mapper>

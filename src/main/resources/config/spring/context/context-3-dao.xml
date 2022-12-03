@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="business_dao" class="dao.BusinessDAO">
+		<!-- setter injection : setter를 통해 값을 주입한다 <property name="sqlSession" 
+			ref="sqlSessionBean"/> -->
+
+		<!-- constructor injection : 생성자를 통해 값을 주입한다 -->
+		<constructor-arg ref="sqlSessionBean" />
+	</bean>
+
+	<bean id="member_dao" class="dao.MemberDAO">
+		<!-- setter injection : setter를 통해 값을 주입한다 <property name="sqlSession" 
+			ref="sqlSessionBean"/> -->
+
+		<!-- constructor injection : 생성자를 통해 값을 주입한다 -->
+		<constructor-arg ref="sqlSessionBean" />
+	</bean>
+	
+	<bean id="reservation_dao" class="dao.ReservationDAO">
+		<!-- setter injection : setter를 통해 값을 주입한다 <property name="sqlSession" 
+			ref="sqlSessionBean"/> -->
+
+		<!-- constructor injection : 생성자를 통해 값을 주입한다 -->
+		<constructor-arg ref="sqlSessionBean" />
+	</bean>
+	
+	<bean id="admin_dao" class="dao.AdminDAO">
+		<!-- setter injection : setter를 통해 값을 주입한다 <property name="sqlSession" 
+			ref="sqlSessionBean"/> -->
+
+		<!-- constructor injection : 생성자를 통해 값을 주입한다 -->
+		<constructor-arg ref="sqlSessionBean" />
+	</bean>
+	
+	<bean id="room_dao" class="dao.RoomDAO">
+		<!-- setter injection : setter를 통해 값을 주입한다 <property name="sqlSession" 
+			ref="sqlSessionBean"/> -->
+
+		<!-- constructor injection : 생성자를 통해 값을 주입한다 -->
+		<constructor-arg ref="sqlSessionBean" />
+	</bean>
+	
+	<bean id="review_dao" class="dao.ReviewDAO">
+		<!-- setter injection : setter를 통해 값을 주입한다 <property name="sqlSession" 
+			ref="sqlSessionBean"/> -->
+
+		<!-- constructor injection : 생성자를 통해 값을 주입한다 -->
+		<constructor-arg ref="sqlSessionBean" />
+	</bean>
+</beans>

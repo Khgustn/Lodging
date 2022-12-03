@@ -1,0 +1,30 @@
+.lee {
+	background-color: rgb(2, 100, 125);
+	color: white;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.list {
+	background-color: rgb(236, 231, 231);
+	color: rgb(0, 0, 0);
+	width: 180px;
+}
+
+.business_view {
+	width: 1024px !important;
+	margin: 5% auto !important;
+}
+
+.default_btn {
+	background-color: #02647d;
+	border: none;
+	font-size: 18px;
+	color: white;
+	font-weight: bold;
+	height: 56px;
+	width: 100%;
+}
+.nav-tabs .active {
+	color: #02647d !important;
+	font-weight: bold;
+}
